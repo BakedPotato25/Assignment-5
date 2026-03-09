@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Danh sach sach — Bookstore{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-book me-2 text-primary"></i>Danh sach sach</h2>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="text-muted">{{ books|length }} cuon sach</span>
+        {% if user.is_staff %}
+        <a href="/staff/books/add/" class="btn btn-warning btn-sm">
+            <i class="bi bi-plus-circle me-1"></i>Them sach moi
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if books %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for book in books %}
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title fw-semibold">{{ book.title }}</h5>
+                <p class="text-muted small mb-1"><i class="bi bi-person me-1"></i>{{ book.author }}</p>
+                <p class="mb-3">
+                    <span class="badge bg-success fs-6">{{ book.price|floatformat:0 }} VND</span>
+                    <span class="badge bg-secondary ms-1">Kho: {{ book.stock }}</span>
+                </p>
+
+                <div class="mt-auto d-flex flex-column gap-2">
+                    {% if user.is_authenticated %}
+                    <!-- Add to cart -->
+                    <form method="post" action="/cart/add/">
+                        {% csrf_token %}
+                        <input type="hidden" name="book_id" value="{{ book.id }}" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-cart-plus me-1"></i>Them vao gio
+                        </button>
+                    </form>
+
+                    <!-- Rate this book — trigger modal -->
+                    <button class="btn btn-outline-warning w-100" data-bs-toggle="modal"
+                        data-bs-target="#reviewModal{{ book.id }}">
+                        <i class="bi bi-star-half me-1"></i>Danh gia sach
+                    </button>
+
+                    <!-- Staff controls -->
+                    {% if user.is_staff %}
+                    <div class="d-flex gap-1">
+                        <a href="/staff/books/{{ book.id }}/edit/" class="btn btn-sm btn-outline-info w-50">
+                            <i class="bi bi-pencil"></i> Sua
+                        </a>
+                        <form method="post" action="/staff/books/{{ book.id }}/delete/" class="w-50">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100"
+                                onclick="return confirm('Xoa sach nay?')">
+                                <i class="bi bi-trash"></i> Xoa
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    {% else %}
+                    <a href="/login/" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Dang nhap de mua
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal for each book -->
+    {% if user.is_authenticated %}
+    <div class="modal fade" id="reviewModal{{ book.id }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-star me-2"></i>Danh gia: {{ book.title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="/reviews/submit/">
+                    {% csrf_token %}
+                    <input type="hidden" name="book_id" value="{{ book.id }}" />
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Diem danh gia (1-5)</label>
+                            <select name="rating" class="form-select">
+                                <option value="5">⭐⭐⭐⭐⭐ — Tuyet voi</option>
+                                <option value="4">⭐⭐⭐⭐ — Tot</option>
+                                <option value="3">⭐⭐⭐ — Binh thuong</option>
+                                <option value="2">⭐⭐ — Chua tot</option>
+                                <option value="1">⭐ — Rat te</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nhan xet</label>
+                            <textarea name="comment" class="form-control" rows="3"
+                                placeholder="Chia se cam nhan cua ban ve cuon sach..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huy</button>
+                        <button type="submit" class="btn btn-warning fw-semibold">
+                            <i class="bi bi-send me-1"></i>Gui danh gia
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-warning mt-4">
+    <i class="bi bi-exclamation-triangle me-2"></i>Khong co sach hoac book-service dang khong kha dung.
+</div>
+{% endif %}
+{% endblock %}

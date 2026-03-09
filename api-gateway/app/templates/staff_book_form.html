@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{% if action == 'edit' %}Sua sach{% else %}Them sach moi{% endif %} — Staff{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow mt-2">
+            <div class="card-header bg-warning fw-bold">
+                <i class="bi bi-book me-2"></i>
+                {% if action == 'edit' %}Chinh sua sach #{{ book_id }}{% else %}Them sach moi{% endif %}
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tieu de sach</label>
+                        <input type="text" name="title" class="form-control" required
+                            value="{{ book.title|default:'' }}" placeholder="Nhap tieu de sach..." />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tac gia</label>
+                        <input type="text" name="author" class="form-control" required
+                            value="{{ book.author|default:'' }}" placeholder="Ten tac gia..." />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Gia (VND)</label>
+                            <input type="number" name="price" class="form-control" required min="0"
+                                value="{{ book.price|default:0 }}" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">So luong kho</label>
+                            <input type="number" name="stock" class="form-control" required min="0"
+                                value="{{ book.stock|default:0 }}" />
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="/books/" class="btn btn-secondary">Huy</a>
+                        <button type="submit" class="btn btn-warning fw-semibold">
+                            <i class="bi bi-save me-1"></i>
+                            {% if action == 'edit' %}Luu thay doi{% else %}Them sach{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

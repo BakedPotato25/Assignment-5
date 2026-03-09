@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Dang nhap — Bookstore{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="card border-0 shadow mt-4">
+            <div class="card-body p-4">
+                <h3 class="card-title fw-bold text-center mb-4">
+                    <i class="bi bi-box-arrow-in-right me-2 text-primary"></i>Dang nhap
+                </h3>
+                {% if error %}
+                <div class="alert alert-danger py-2">{{ error }}</div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Ten dang nhap</label>
+                        <input type="text" name="username" class="form-control" placeholder="username" required
+                            autofocus />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Mat khau</label>
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">Dang nhap</button>
+                </form>
+                <hr />
+                <p class="text-center text-muted mb-0 small">
+                    Chua co tai khoan? <a href="/register/" class="text-decoration-none">Dang ky ngay</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

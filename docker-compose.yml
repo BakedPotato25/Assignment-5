@@ -1,0 +1,93 @@
+﻿version: "3.9"
+
+# Bookstore Microservices — SQLite, no external database
+
+services:
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports: [ "8000:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  staff-service:
+    build: ./staff-service
+    container_name: staff-service
+    ports: [ "8001:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  manager-service:
+    build: ./manager-service
+    container_name: manager-service
+    ports: [ "8002:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  customer-service:
+    build: ./customer-service
+    container_name: customer-service
+    ports: [ "8003:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  catalog-service:
+    build: ./catalog-service
+    container_name: catalog-service
+    ports: [ "8004:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  book-service:
+    build: ./book-service
+    container_name: book-service
+    ports: [ "8005:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  cart-service:
+    build: ./cart-service
+    container_name: cart-service
+    ports: [ "8006:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    ports: [ "8007:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  ship-service:
+    build: ./ship-service
+    container_name: ship-service
+    ports: [ "8008:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  pay-service:
+    build: ./pay-service
+    container_name: pay-service
+    ports: [ "8009:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  comment-rate-service:
+    build: ./comment-rate-service
+    container_name: comment-rate-service
+    ports: [ "8010:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  recommender-ai-service:
+    build: ./recommender-ai-service
+    container_name: recommender-ai-service
+    ports: [ "8011:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+networks:
+  bookstore-net:
+    driver: bridge
