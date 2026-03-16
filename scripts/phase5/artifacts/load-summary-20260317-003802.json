@@ -1,0 +1,15 @@
+﻿{
+    "generated_at":  "2026-03-17T00:38:02",
+    "target_url":  "http://localhost:8000/books/",
+    "total_requests":  80,
+    "error_count":  0,
+    "latency_ms":  {
+                       "avg":  44.34,
+                       "min":  33.19,
+                       "max":  172.8
+                   },
+    "statuses":  {
+                     "status":  "200",
+                     "count":  80
+                 }
+}

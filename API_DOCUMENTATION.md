@@ -64,7 +64,7 @@ Nhạc trưởng - Orchestrator quản lý quy trình phân tán từ lúc bắt
 
 | Method | Endpoint | Mô tả chức năng | Request Payload (Mẫu) | Response / Action |
 | --- | --- | --- | --- | --- |
-| **POST** | `/orders/` | Xử lý việc đặt đơn hàng tổng thể. Nhận dữ liệu Order, tự gọi Payment Service, nếu pass sẽ tiếp tục gọi Shipment Service. Fail ở khâu nào chặn lại ở khâu đó (Saga Pattern). | `{"customer_id": 1, "total_amount": 250000, "items": [{"book_id": 2, "quantity": 1}], "payment_method": "COD", "shipping_address": "Dong Da, HN"}` | HTTP 201 Created nếu chuỗi Payment và Shipment thành công, cập nhật trạng thái đơn hàng là `Confirmed`. Nếu lỗi trả về lỗi (502 Gateway), kèm lý do. |
+| **POST** | `/orders/` | Xử lý việc đặt đơn hàng tổng thể. Nhận dữ liệu Order, tự gọi Payment Service, nếu pass sẽ tiếp tục gọi Shipment Service. Fail ở khâu nào chặn lại ở khâu đó (Saga Pattern). | `{"customer_id": 1, "total_amount": 250000, "items": [{"book_id": 2, "quantity": 1}], "payment_method": "COD", "shipping_method": "Express", "shipping_address": "Dong Da, HN"}` | HTTP 201 Created nếu chuỗi Payment và Shipment thành công, cập nhật trạng thái đơn hàng là `Confirmed`. Nếu lỗi trả về lỗi (502 Gateway), kèm lý do. |
 
 ---
 

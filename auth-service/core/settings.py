@@ -22,11 +22,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'app.middleware.CorrelationIdMiddleware',
-    'app.middleware.GatewayMetricsMiddleware',
-    'app.middleware.GatewayRequestLoggingMiddleware',
-    'app.middleware.GatewayRateLimitMiddleware',
-    'app.middleware.GatewayAuthMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 

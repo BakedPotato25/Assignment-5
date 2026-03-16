@@ -221,13 +221,13 @@ Mặc dù hệ thống được chia làm 12 dịch vụ, cốt lõi giao tiếp
 | **api-gateway**   | GET | `/` | Trả về giao diện trang chủ Bootstrap hiển thị danh sách Sách. |
 | **api-gateway**   | POST | `/register/` | Tiếp nhận Form HTML, gọi `customer-service` tạo tài khoản. |
 | **customer-service** | POST | `/customers/` | Khởi tạo Record User. Tự động trigger `cart-service` tạo Cart rỗng. |
-| **customer-service** | GET | `/customers/{id}/` | Truyxoát thông tin người mua hàng. |
+| **customer-service** | GET | `/customers/` | Truy xuất danh sách thông tin người mua hàng. |
 | **book-service** | GET | `/books/` | Liệt kê toàn bộ sách hiện hành trong kho quản lý. |
 | **book-service** | POST | `/books/` | Thêm đầu sách mới (Chỉ dành cho quyền Staff/Admin). |
 | **cart-service** | GET | `/carts/{customer_id}/` | Lấy dữ liệu Giỏ hàng cá nhân hóa dựa trên Session User. |
 | **cart-service** | POST | `/cart-items/` | Validate Book ID hợp lệ và đưa ấn phẩm vào giỏ. |
 | **cart-service** | PUT | `/cart-items/{item_id}/` | Cập nhật số lượng đầu ấn trong giỏ hàng (`+`, `-`). |
-| **order-service** | POST | `/orders/` | Nhận lệnh "Checkout", lưu Order và trigger Saga phân tán. |
+| **order-service** | POST | `/orders/` | Nhận lệnh "Checkout" (kèm `payment_method`, `shipping_method`, `shipping_address`), lưu Order và trigger Saga phân tán. |
 | **pay-service** | POST | `/payments/` | Sinh giả lập giao dịch thanh toán (Mock-up Payment Gateway). |
 | **ship-service** | POST | `/shipments/` | Sinh lộ trình điều vận hàng hóa ảo. |
 | **comment-rate-service**| POST | `/reviews/` | Ghi nhận Rate sao và Feedback từ người dùng. |

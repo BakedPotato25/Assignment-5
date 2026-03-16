@@ -1,0 +1,124 @@
+﻿{
+    "generated_at":  "2026-03-17T00:43:49",
+    "cases":  [
+                  {
+                      "case_name":  "pay_service_down",
+                      "http_status":  502,
+                      "ok":  false,
+                      "order_id":  9,
+                      "order_status":  "Payment Failed",
+                      "response":  {
+                                       "error":  "Payment service failed.",
+                                       "order_id":  9,
+                                       "status":  "Payment Failed"
+                                   }
+                  },
+                  {
+                      "case_name":  "ship_service_down",
+                      "http_status":  502,
+                      "ok":  false,
+                      "order_id":  10,
+                      "order_status":  "Compensated",
+                      "response":  {
+                                       "error":  "Shipping service failed.",
+                                       "order_id":  10,
+                                       "status":  "Compensated",
+                                       "compensation":  {
+                                                            "attempted":  true,
+                                                            "success":  true
+                                                        }
+                                   }
+                  },
+                  {
+                      "case_name":  "rabbitmq_down",
+                      "http_status":  201,
+                      "ok":  true,
+                      "order_id":  11,
+                      "order_status":  "Confirmed",
+                      "response":  {
+                                       "id":  11,
+                                       "customer_id":  1,
+                                       "total_amount":  "199000.00",
+                                       "status":  "Confirmed",
+                                       "created_at":  "2026-03-17T00:43:14.471209+07:00",
+                                       "items":  [
+                                                     {
+                                                         "id":  20,
+                                                         "book_id":  1,
+                                                         "quantity":  1
+                                                     },
+                                                     {
+                                                         "id":  21,
+                                                         "book_id":  2,
+                                                         "quantity":  1
+                                                     }
+                                                 ],
+                                       "saga_logs":  [
+                                                         {
+                                                             "id":  35,
+                                                             "step":  "Create Order",
+                                                             "from_status":  "",
+                                                             "to_status":  "Pending",
+                                                             "success":  true,
+                                                             "detail":  "Order and items persisted.",
+                                                             "created_at":  "2026-03-17T00:43:14.483408+07:00"
+                                                         },
+                                                         {
+                                                             "id":  36,
+                                                             "step":  "Reserve Payment",
+                                                             "from_status":  "Pending",
+                                                             "to_status":  "Payment Reserved",
+                                                             "success":  true,
+                                                             "detail":  "Payment reserved successfully.",
+                                                             "created_at":  "2026-03-17T00:43:26.217481+07:00"
+                                                         },
+                                                         {
+                                                             "id":  37,
+                                                             "step":  "Reserve Shipping",
+                                                             "from_status":  "Payment Reserved",
+                                                             "to_status":  "Shipping Reserved",
+                                                             "success":  true,
+                                                             "detail":  "Shipping reserved successfully.",
+                                                             "created_at":  "2026-03-17T00:43:33.566448+07:00"
+                                                         },
+                                                         {
+                                                             "id":  38,
+                                                             "step":  "Confirm Order",
+                                                             "from_status":  "Shipping Reserved",
+                                                             "to_status":  "Confirmed",
+                                                             "success":  true,
+                                                             "detail":  "Order confirmed.",
+                                                             "created_at":  "2026-03-17T00:43:37.242878+07:00"
+                                                         }
+                                                     ]
+                                   }
+                  }
+              ],
+    "event_publish_failed_log_count":  24,
+    "event_publish_failed_logs":  [
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.created reason=[Errno -3] Temporary failure in name resolution",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.confirmed reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.created reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserved reason=[Errno -3] Temporary failure in name resolution",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.confirmed reason=",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.created reason=[Errno -3] Temporary failure in name resolution",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserved reason=[Errno -3] Temporary failure in name resolution",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.confirmed reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.created reason=[Errno -3] Temporary failure in name resolution",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.confirmed reason=[Errno -3] Temporary failure in name resolution"
+                                  ]
+}

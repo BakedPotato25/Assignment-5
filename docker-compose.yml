@@ -4,6 +4,13 @@
 
 services:
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports: [ "5672:5672", "15672:15672" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
   api-gateway:
     build: ./api-gateway
     container_name: api-gateway
@@ -57,6 +64,13 @@ services:
     build: ./order-service
     container_name: order-service
     ports: [ "8007:8000" ]
+    depends_on: [ rabbitmq ]
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+      - BOOKSTORE_EVENT_EXCHANGE=bookstore.events
     networks: [ bookstore-net ]
     restart: unless-stopped
 
@@ -64,6 +78,15 @@ services:
     build: ./ship-service
     container_name: ship-service
     ports: [ "8008:8000" ]
+    depends_on: [ rabbitmq ]
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+      - BOOKSTORE_EVENT_EXCHANGE=bookstore.events
+      - BOOKSTORE_SHIP_QUEUE=ship-service.events
+      - ENABLE_EVENT_CONSUMER=1
     networks: [ bookstore-net ]
     restart: unless-stopped
 
@@ -71,6 +94,15 @@ services:
     build: ./pay-service
     container_name: pay-service
     ports: [ "8009:8000" ]
+    depends_on: [ rabbitmq ]
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
+      - BOOKSTORE_EVENT_EXCHANGE=bookstore.events
+      - BOOKSTORE_PAY_QUEUE=pay-service.events
+      - ENABLE_EVENT_CONSUMER=1
     networks: [ bookstore-net ]
     restart: unless-stopped
 
@@ -85,6 +117,13 @@ services:
     build: ./recommender-ai-service
     container_name: recommender-ai-service
     ports: [ "8011:8000" ]
+    networks: [ bookstore-net ]
+    restart: unless-stopped
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports: [ "8012:8000" ]
     networks: [ bookstore-net ]
     restart: unless-stopped
 

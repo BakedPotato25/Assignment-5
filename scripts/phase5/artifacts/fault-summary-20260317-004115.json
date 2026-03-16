@@ -1,0 +1,56 @@
+﻿{
+    "generated_at":  "2026-03-17T00:41:15",
+    "cases":  [
+                  {
+                      "case_name":  "pay_service_down",
+                      "http_status":  502,
+                      "ok":  false,
+                      "order_id":  5,
+                      "order_status":  "Payment Failed",
+                      "response":  {
+                                       "error":  "Payment service failed.",
+                                       "order_id":  5,
+                                       "status":  "Payment Failed"
+                                   }
+                  },
+                  {
+                      "case_name":  "ship_service_down",
+                      "http_status":  502,
+                      "ok":  false,
+                      "order_id":  6,
+                      "order_status":  "Compensated",
+                      "response":  {
+                                       "error":  "Shipping service failed.",
+                                       "order_id":  6,
+                                       "status":  "Compensated",
+                                       "compensation":  {
+                                                            "attempted":  true,
+                                                            "success":  true
+                                                        }
+                                   }
+                  },
+                  {
+                      "case_name":  "rabbitmq_down",
+                      "http_status":  0,
+                      "ok":  false,
+                      "order_id":  null,
+                      "order_status":  null,
+                      "response":  null
+                  }
+              ],
+    "event_publish_failed_log_count":  12,
+    "event_publish_failed_logs":  [
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.created reason=[Errno -3] Temporary failure in name resolution",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.confirmed reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.created reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=payment.reserved reason=[Errno -3] Temporary failure in name resolution",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserve.requested reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=shipping.reserved reason=[Errno -2] Name or service not known",
+                                      "order-service  | EVENT_PUBLISH_FAILED type=order.confirmed reason="
+                                  ]
+}
