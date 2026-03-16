@@ -252,3 +252,50 @@ Dự án "Phân rã hệ thống BookStore Monolith sang kiến trúc Microservi
 3. **Database Migration:** Từ bỏ SQLite, chuyển sang PostgreSQL tập trung cho từng Container (Cơ sở chung về SQL DBMS Engine, tách riêng Schema Authorization cho từng Microservice). 
 
 *(Hết báo cáo)*
+
+---
+
+## 8. Cap nhat Assignment 06 (JWT, Saga, Event Bus, Observability)
+
+### 8.1. Xac thuc tap trung va RBAC
+- He thong da bo sung `auth-service` lam dich vu xac thuc tap trung voi JWT.
+- `api-gateway` khong tu sinh xac thuc cuc bo cho nghiep vu nua, ma validate token qua `POST /auth/validate/`.
+- RBAC duoc chuan hoa theo role: `customer`, `staff`, `manager`, `admin`.
+
+### 8.2. Saga transaction cho dat hang
+- `order-service` da nang cap state machine: `Pending -> Payment Reserved -> Shipping Reserved -> Confirmed`.
+- Nhanh loi co co che bu tru:
+    - Loi thanh toan: `Payment Failed`
+    - Loi van chuyen sau thanh toan: goi compensate payment va chot `Compensated`
+- Log bang `SagaStepLog` cho phep truy vet toan bo buoc chuyen trang thai trong demo.
+
+### 8.3. Event-driven voi RabbitMQ (hybrid)
+- `order-service` publish event lifecycle len exchange topic `bookstore.events`.
+- `pay-service`, `ship-service` consume event command de dong bo du lieu.
+- He thong van giu tuong thich API REST hien huu (hybrid REST + event) de giam rui ro chuyen doi.
+
+### 8.4. Gateway hardening va quan sat he thong
+- Da bo sung middleware:
+    - Correlation ID
+    - JWT auth validation
+    - Rate limiting
+    - Structured request logging
+- Da bo sung endpoint observability:
+    - `GET /health/` cho gateway va cac key service
+    - `GET /metrics/` xuat bo dem theo dinh dang Prometheus
+
+### 8.5. Validation deliverables
+- Fault simulation da co script tu dong:
+    - `pay-service` down
+    - `ship-service` down
+    - RabbitMQ down
+- Load smoke da co script va artifact ket qua.
+- Phase 6 bo sung acceptance demo script chay mot lenh tu clean build, map truc tiep vao 5 tieu chi "Done".
+
+### 8.6. Danh gia muc do hoan thanh
+Theo bo tieu chi Assignment 06, he thong da dat trang thai san sang demo:
+1. End-to-end JWT login + protected APIs.
+2. Saga transition ro rang va compensation dung logic.
+3. Event flow RabbitMQ quan sat duoc qua marker log.
+4. Health/metrics truy cap duoc cho cac service chinh.
+5. Co script demo co the lap lai tu `docker compose up -d --build`.

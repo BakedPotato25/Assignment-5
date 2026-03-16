@@ -136,3 +136,54 @@ BOD phân hệ cốt cán siêu quản trị.
 ---
 
 *Tài liệu này được tự động gen từ phân tích mã nguồn thời gian thực bằng Antigravity. Tất cả dữ liệu ánh xạ chính xác 100% với routing của Django REST Framework và Logic tại `views.py`.*
+
+---
+
+## Assignment 06 Addendum (JWT + Saga + Event Bus + Observability)
+
+### A. Auth Service (`auth-service` | Cổng 8012)
+
+| Method | Endpoint | Mô tả chức năng | Request Payload (Mẫu) | Response / Action |
+| --- | --- | --- | --- | --- |
+| **POST** | `/auth/register/` | Tạo user tập trung và gán role (`customer`, `staff`, `manager`, `admin`). | `{"username":"user1","email":"u1@mail.com","password":"secret123","role":"customer"}` | HTTP 201, trả `access_token` JWT và thông tin user. |
+| **POST** | `/auth/login/` | Đăng nhập tập trung, phát hành JWT. | `{"username":"user1","password":"secret123"}` | HTTP 200, trả `access_token` JWT và role. |
+| **POST** | `/auth/validate/` | Xác thực token JWT cho gateway/downstream. | `{"token":"<jwt>"}` | HTTP 200 nếu hợp lệ (`valid=true`), 401 nếu token lỗi/hết hạn. |
+| **GET** | `/health/` | Kiểm tra trạng thái service. | Không | HTTP 200. |
+| **GET** | `/metrics/` | Export metrics dạng Prometheus text. | Không | HTTP 200, text/plain. |
+
+### B. Saga và bù trừ giao dịch (`order-service`)
+
+`POST /orders/` thực thi Saga theo chuỗi:
+1. `Pending`
+2. `Payment Reserved`
+3. `Shipping Reserved`
+4. `Confirmed`
+
+Khi lỗi:
+- Lỗi thanh toán: chuyển `Payment Failed`
+- Lỗi vận chuyển sau thanh toán: gọi compensation payment và chuyển `Compensated`
+
+Response order bao gồm `saga_logs` để quan sát đầy đủ từng bước chuyển trạng thái.
+
+### C. Event Bus RabbitMQ (Hybrid REST + Async Event)
+
+- `order-service` publish event qua exchange `bookstore.events` (topic)
+- `pay-service` consume `payment.reserve.requested`, `payment.compensation.requested`
+- `ship-service` consume `shipping.reserve.requested`
+- Marker log chính: `EVENT_PUBLISHED`, `EVENT_CONSUMED`, `EVENT_PUBLISH_FAILED`
+
+### D. Gateway hardening và observability
+
+- Rate limiting tại gateway (mặc định 120 request / 60 giây)
+- Correlation ID middleware (`X-Correlation-ID`)
+- Auth middleware validate JWT qua `auth-service`
+- Endpoint:
+	- `GET /health/` tại gateway tổng hợp health của auth/order/pay/ship
+	- `GET /metrics/` tại gateway export counters Prometheus
+
+### E. Validation scripts (Assignment 06)
+
+- Fault simulations: [scripts/phase5/fault-simulations.ps1](scripts/phase5/fault-simulations.ps1)
+- Load smoke: [scripts/phase5/load-smoke.ps1](scripts/phase5/load-smoke.ps1)
+- k6 smoke (optional): [scripts/phase5/k6-smoke.js](scripts/phase5/k6-smoke.js)
+- Acceptance demo (Phase 6): [scripts/phase6/demo-acceptance.ps1](scripts/phase6/demo-acceptance.ps1)

@@ -66,6 +66,12 @@
 - Load test smoke (k6 or locust minimal script)
 - Update architecture report and API docs for Assignment 06
 
+### Phase 6: Release Gate and Demo Pack
+- Add a reproducible acceptance script from clean `docker compose up -d --build`
+- Verify all "Done" criteria in one run and save machine-readable artifact
+- Refresh API and architecture docs with Assignment 06 updates
+- Prepare final commit-ready summary for delivery
+
 ## Acceptance Criteria for "Done"
 - End-to-end JWT login + protected APIs pass
 - Order saga transitions visible and compensates correctly
