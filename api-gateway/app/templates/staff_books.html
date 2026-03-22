@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}Quan ly sach Staff — Bookstore{% endblock %}
+
+{% block content %}
+<section class="surface-panel p-4 p-lg-5 mb-4">
+    <div class="section-head">
+        <div>
+            <h2 class="fw-bold mb-2"><i class="bi bi-kanban-fill me-2 text-success"></i>Staff Book CRUD</h2>
+            <p class="section-subtle mb-0">Quan ly danh muc sach nhanh gon, toi uu cho thao tac noi bo tren desktop va mobile.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <span class="badge text-bg-light border px-3 py-2">{{ books|length }} dau sach</span>
+            <a href="/staff/books/add/" class="btn btn-warning btn-sm">
+                <i class="bi bi-plus-circle me-1"></i>Them sach moi
+            </a>
+            <a href="/books/" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Quay lai cua hang
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-2 g-md-3 align-items-center mt-1">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <label for="staffBookSearch" class="visually-hidden">Tim sach trong trang quan tri staff</label>
+                <input id="staffBookSearch" type="text" class="form-control" placeholder="Tim theo ten sach hoac tac gia..."
+                    aria-label="Tim sach trong trang quan tri staff" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="staffBookSort" class="visually-hidden">Sap xep danh sach sach staff</label>
+            <select id="staffBookSort" class="form-select" aria-label="Sap xep danh sach sach staff">
+                <option value="default">Sap xep mac dinh</option>
+                <option value="price-asc">Gia: thap den cao</option>
+                <option value="price-desc">Gia: cao den thap</option>
+                <option value="stock-asc">Ton kho: thap den cao</option>
+                <option value="stock-desc">Ton kho: cao den thap</option>
+            </select>
+        </div>
+    </div>
+</section>
+
+{% if books %}
+<div class="surface-panel p-0 overflow-hidden d-none d-lg-block">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0" aria-label="Bang quan ly sach cho staff">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" class="ps-4">ID</th>
+                    <th scope="col">Tieu de</th>
+                    <th scope="col">Tac gia</th>
+                    <th scope="col">Gia (VND)</th>
+                    <th scope="col">Ton kho</th>
+                    <th scope="col" class="text-end pe-4">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody id="staffBookTableBody">
+                {% for book in books %}
+                <tr class="stagger-item" data-staff-book-row data-title="{{ book.title|lower }}" data-author="{{ book.author|lower }}"
+                    data-price="{{ book.price }}" data-stock="{{ book.stock }}">
+                    <td class="ps-4 fw-semibold">#{{ book.id }}</td>
+                    <td>{{ book.title }}</td>
+                    <td class="text-muted">{{ book.author }}</td>
+                    <td>{{ book.price|floatformat:0 }}</td>
+                    <td>
+                        <span class="badge {% if book.stock < 5 %}text-bg-danger{% elif book.stock < 15 %}text-bg-warning{% else %}text-bg-success{% endif %}">
+                            {{ book.stock }}
+                        </span>
+                    </td>
+                    <td class="text-end pe-4">
+                        <div class="d-inline-flex gap-2">
+                            <a href="/staff/books/{{ book.id }}/edit/" class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-pencil-square me-1"></i>Sua
+                            </a>
+                            <form method="post" action="/staff/books/{{ book.id }}/delete/" data-loading>
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Xac nhan xoa sach #{{ book.id }}?')">
+                                    <i class="bi bi-trash3 me-1"></i>Xoa
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="staffBookCards" class="d-grid gap-3 d-lg-none">
+    {% for book in books %}
+    <article class="surface-panel p-3 stagger-item" data-staff-book-row data-title="{{ book.title|lower }}" data-author="{{ book.author|lower }}"
+        data-price="{{ book.price }}" data-stock="{{ book.stock }}">
+        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+            <h5 class="mb-0 fw-semibold">{{ book.title }}</h5>
+            <span class="badge text-bg-light border">#{{ book.id }}</span>
+        </div>
+        <p class="text-muted mb-2"><i class="bi bi-person me-1"></i>{{ book.author }}</p>
+        <div class="d-flex justify-content-between small mb-3">
+            <span>Gia: <strong>{{ book.price|floatformat:0 }} VND</strong></span>
+            <span>Ton kho: <strong>{{ book.stock }}</strong></span>
+        </div>
+        <div class="d-grid gap-2">
+            <a href="/staff/books/{{ book.id }}/edit/" class="btn btn-outline-info btn-sm">
+                <i class="bi bi-pencil-square me-1"></i>Sua thong tin
+            </a>
+            <form method="post" action="/staff/books/{{ book.id }}/delete/" data-loading>
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm w-100"
+                    onclick="return confirm('Xac nhan xoa sach #{{ book.id }}?')">
+                    <i class="bi bi-trash3 me-1"></i>Xoa sach
+                </button>
+            </form>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+<div id="staffBookEmptyResult" class="surface-panel text-center py-5 mt-4 d-none" aria-live="polite">
+    <i class="bi bi-funnel display-6 text-muted"></i>
+    <p class="mt-3 mb-1 fw-semibold">Khong co ban ghi phu hop bo loc</p>
+    <p class="text-muted mb-0">Hay xoa tu khoa tim kiem hoac doi cach sap xep.</p>
+</div>
+{% else %}
+<div class="alert alert-warning mt-4">
+    <i class="bi bi-exclamation-triangle me-2"></i>Chua co sach de quan ly hoac book-service dang khong kha dung.
+</div>
+{% endif %}
+
+<script>
+    (function () {
+        const searchInput = document.getElementById("staffBookSearch");
+        const sortSelect = document.getElementById("staffBookSort");
+        const rows = Array.from(document.querySelectorAll("[data-staff-book-row]"));
+        const emptyResult = document.getElementById("staffBookEmptyResult");
+
+        if (!rows.length) return;
+
+        rows.forEach((row, idx) => {
+            row.style.setProperty("--stagger-delay", `${Math.min(idx * 40, 360)}ms`);
+        });
+
+        const tableBody = document.getElementById("staffBookTableBody");
+        const cardContainer = document.getElementById("staffBookCards");
+
+        function applyFilterAndSort() {
+            const keyword = (searchInput?.value || "").trim().toLowerCase();
+            const mode = sortSelect?.value || "default";
+
+            rows.forEach((row) => {
+                const text = `${row.dataset.title} ${row.dataset.author}`;
+                const visible = !keyword || text.includes(keyword);
+                row.style.display = visible ? "" : "none";
+            });
+
+            const visibleRows = rows.filter((row) => row.style.display !== "none");
+            visibleRows.sort((a, b) => {
+                const priceA = Number(a.dataset.price || 0);
+                const priceB = Number(b.dataset.price || 0);
+                const stockA = Number(a.dataset.stock || 0);
+                const stockB = Number(b.dataset.stock || 0);
+                if (mode === "price-asc") return priceA - priceB;
+                if (mode === "price-desc") return priceB - priceA;
+                if (mode === "stock-asc") return stockA - stockB;
+                if (mode === "stock-desc") return stockB - stockA;
+                return 0;
+            });
+
+            visibleRows.forEach((row) => {
+                if (tableBody && row.parentElement === tableBody) {
+                    tableBody.appendChild(row);
+                }
+                if (cardContainer && row.parentElement === cardContainer) {
+                    cardContainer.appendChild(row);
+                }
+            });
+
+            if (emptyResult) {
+                emptyResult.classList.toggle("d-none", visibleRows.length > 0);
+            }
+        }
+
+        searchInput?.addEventListener("input", applyFilterAndSort);
+        sortSelect?.addEventListener("change", applyFilterAndSort);
+    })();
+</script>
+{% endblock %}

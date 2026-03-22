@@ -3,36 +3,41 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-5 col-lg-4">
-        <div class="card border-0 shadow mt-4">
-            <div class="card-body p-4">
-                <h3 class="card-title fw-bold text-center mb-4">
-                    <i class="bi bi-person-plus me-2 text-success"></i>Dang ky
-                </h3>
-                {% if error %}
-                <div class="alert alert-danger py-2">{{ error }}</div>
-                {% endif %}
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Ten dang nhap</label>
-                        <input type="text" name="username" class="form-control" placeholder="username" required
-                            autofocus />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="ban@email.com" required />
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Mat khau</label>
-                        <input type="password" name="password" class="form-control" placeholder="••••••••" required />
-                    </div>
-                    <button type="submit" class="btn btn-success w-100 py-2">Tao tai khoan</button>
-                </form>
-                <hr />
-                <p class="text-center text-muted mb-0 small">
-                    Da co tai khoan? <a href="/login/" class="text-decoration-none">Dang nhap</a>
-                </p>
+    <div class="col-lg-9">
+        <div class="surface-panel p-0 overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-6 p-4 p-lg-5">
+                    <h3 class="mb-3"><i class="bi bi-person-plus me-2"></i>Tao tai khoan moi</h3>
+                    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+                    {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
+                    <form method="post" class="d-grid gap-3" data-loading>
+                        {% csrf_token %}
+                        <div>
+                            <label class="form-label">Username</label>
+                            <input name="username" class="form-control" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <button class="btn btn-success w-100">Tao tai khoan</button>
+                    </form>
+                    <p class="small text-muted mt-3 mb-0">Da co tai khoan? <a href="/login/">Dang nhap</a>.</p>
+                </div>
+                <div class="col-md-6 d-none d-md-flex p-4 p-lg-5 bg-light border-start flex-column justify-content-center">
+                    <span class="badge rounded-pill text-bg-primary mb-3">Onboarding</span>
+                    <h4 class="fw-bold mb-2">Bat dau hanh trinh mua sach</h4>
+                    <p class="text-muted mb-3">Tai khoan moi giup ban dat hang nhanh hon, luu lich su va quan ly gio hang xuyen suot.</p>
+                    <ul class="list-unstyled small text-muted mb-0 d-grid gap-2">
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Dat hang da buoc qua API Gateway</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>Theo doi trang thai don va van chuyen</li>
+                        <li><i class="bi bi-check-circle-fill text-success me-2"></i>San sang cho role-based dashboard</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

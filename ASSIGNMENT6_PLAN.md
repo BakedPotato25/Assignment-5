@@ -67,10 +67,20 @@
 - Update architecture report and API docs for Assignment 06
 
 ### Phase 6: Release Gate and Demo Pack
-- Add a reproducible acceptance script from clean `docker compose up -d --build`
-- Verify all "Done" criteria in one run and save machine-readable artifact
-- Refresh API and architecture docs with Assignment 06 updates
-- Prepare final commit-ready summary for delivery
+- [x] Add a reproducible acceptance script from clean `docker compose up -d --build`
+- [x] Verify all "Done" criteria in one run and save machine-readable artifact
+- [x] Refresh API and architecture docs with Assignment 06 updates
+- [x] Prepare final commit-ready summary for delivery
+
+### Release Status (2026-03-22)
+- Release gate: PASSED
+- Latest clean-build acceptance artifact: `scripts/phase6/artifacts/acceptance-summary-20260322-192158.json`
+- Result: `done = true` with all 5 done criteria = `true`
+- Documentation refreshed:
+  - `API_DOCUMENTATION.md` (Assignment 06 Addendum + validation scripts)
+  - `Bao_Cao_Kien_Truc_Microservices.md` (Assignment 06 architecture update)
+  - `scripts/phase7/PHASE7_QA_REPORT_20260322.md` (UI QA/regression evidence)
+  - `scripts/phase7/PHASE7_BEFORE_AFTER_TEMPLATE.md` (before/after checklist)
 
 ## Acceptance Criteria for "Done"
 - End-to-end JWT login + protected APIs pass

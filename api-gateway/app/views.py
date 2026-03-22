@@ -299,6 +299,27 @@ def book_list(request):
     return render(request, "books.html", {"books": books})
 
 
+@login_required(login_url="/login/")
+def staff_books(request):
+    auth_redirect = _require_gateway_auth(request)
+    if auth_redirect:
+        return auth_redirect
+    if not _is_staff_role(request):
+        messages.error(request, "Ban khong co quyen truy cap chuc nang nay.")
+        return redirect("book_list")
+
+    try:
+        resp = _gw_get(request, BOOK_SERVICE_URL, timeout=5)
+        resp.raise_for_status()
+        books = resp.json()
+    except requests.exceptions.RequestException as e:
+        logger.warning("book-service unreachable for staff_books: %s", e)
+        books = []
+        messages.error(request, "Khong the tai danh sach sach tu book-service.")
+
+    return render(request, "staff_books.html", {"books": books})
+
+
 # ──────────────────────────────────────────────
 # STAFF: Book management (proxies to book-service)
 # ──────────────────────────────────────────────

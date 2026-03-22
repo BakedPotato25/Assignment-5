@@ -2,35 +2,72 @@
 {% block title %}Danh sach sach — Bookstore{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold"><i class="bi bi-book me-2 text-primary"></i>Danh sach sach</h2>
-    <div class="d-flex gap-2 align-items-center">
-        <span class="text-muted">{{ books|length }} cuon sach</span>
-        {% if user.is_staff %}
-        <a href="/staff/books/add/" class="btn btn-warning btn-sm">
-            <i class="bi bi-plus-circle me-1"></i>Them sach moi
-        </a>
-        {% endif %}
+<section class="surface-panel p-4 p-lg-5 mb-4">
+    <div class="section-head">
+        <div>
+            <h2 class="fw-bold mb-2"><i class="bi bi-journal-richtext me-2 text-success"></i>Thu vien sach</h2>
+            <p class="section-subtle mb-0">Kham pha bo suu tap duoc cap nhat lien tuc voi gia va ton kho realtime.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <span class="badge text-bg-light border px-3 py-2">{{ books|length }} cuon sach</span>
+            {% if user.is_staff %}
+            <a href="/staff/books/" class="btn btn-outline-success btn-sm">
+                <i class="bi bi-kanban me-1"></i>Quan ly Staff
+            </a>
+            <a href="/staff/books/add/" class="btn btn-warning btn-sm">
+                <i class="bi bi-plus-circle me-1"></i>Them sach moi
+            </a>
+            {% endif %}
+        </div>
     </div>
-</div>
+
+    <div class="row g-2 g-md-3 align-items-center mt-1">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <label for="bookSearch" class="visually-hidden">Tim sach theo tieu de hoac tac gia</label>
+                <input id="bookSearch" type="text" class="form-control" placeholder="Tim theo ten sach hoac tac gia..."
+                    aria-label="Tim sach theo tieu de hoac tac gia" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label for="bookSort" class="visually-hidden">Sap xep danh sach sach</label>
+            <select id="bookSort" class="form-select" aria-label="Sap xep danh sach sach">
+                <option value="default">Sap xep mac dinh</option>
+                <option value="price-asc">Gia: thap den cao</option>
+                <option value="price-desc">Gia: cao den thap</option>
+                <option value="stock-desc">Ton kho: nhieu den it</option>
+            </select>
+        </div>
+    </div>
+</section>
 
 {% if books %}
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+<div id="bookGrid" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
     {% for book in books %}
-    <div class="col">
-        <div class="card h-100 border-0 shadow-sm">
+    <div class="col" data-book-card data-title="{{ book.title|lower }}" data-author="{{ book.author|lower }}"
+        data-price="{{ book.price }}" data-stock="{{ book.stock }}">
+        <div class="card h-100 border-0 shadow-sm stagger-item">
             <div class="card-body d-flex flex-column">
-                <h5 class="card-title fw-semibold">{{ book.title }}</h5>
-                <p class="text-muted small mb-1"><i class="bi bi-person me-1"></i>{{ book.author }}</p>
-                <p class="mb-3">
-                    <span class="badge bg-success fs-6">{{ book.price|floatformat:0 }} VND</span>
-                    <span class="badge bg-secondary ms-1">Kho: {{ book.stock }}</span>
-                </p>
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-2">
+                    <h5 class="card-title fw-semibold mb-0">{{ book.title }}</h5>
+                    <span class="badge rounded-pill text-bg-success">{{ book.price|floatformat:0 }} VND</span>
+                </div>
+                <p class="text-muted small mb-2"><i class="bi bi-person me-1"></i>{{ book.author }}</p>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between small text-muted mb-1">
+                        <span><i class="bi bi-box-seam me-1"></i>Ton kho</span>
+                        <span>{{ book.stock }}</span>
+                    </div>
+                    <div class="progress" role="progressbar" aria-label="Stock level" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-success" style="width: {% if book.stock > 100 %}100{% else %}{{ book.stock }}{% endif %}%"></div>
+                    </div>
+                </div>
 
                 <div class="mt-auto d-flex flex-column gap-2">
                     {% if user.is_authenticated %}
                     <!-- Add to cart -->
-                    <form method="post" action="/cart/add/">
+                    <form method="post" action="/cart/add/" data-loading>
                         {% csrf_token %}
                         <input type="hidden" name="book_id" value="{{ book.id }}" />
                         <input type="hidden" name="quantity" value="1" />
@@ -51,7 +88,7 @@
                         <a href="/staff/books/{{ book.id }}/edit/" class="btn btn-sm btn-outline-info w-50">
                             <i class="bi bi-pencil"></i> Sua
                         </a>
-                        <form method="post" action="/staff/books/{{ book.id }}/delete/" class="w-50">
+                        <form method="post" action="/staff/books/{{ book.id }}/delete/" class="w-50" data-loading>
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-outline-danger w-100"
                                 onclick="return confirm('Xoa sach nay?')">
@@ -80,7 +117,7 @@
                     <h5 class="modal-title fw-bold"><i class="bi bi-star me-2"></i>Danh gia: {{ book.title }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="post" action="/reviews/submit/">
+                <form method="post" action="/reviews/submit/" data-loading>
                     {% csrf_token %}
                     <input type="hidden" name="book_id" value="{{ book.id }}" />
                     <div class="modal-body">
@@ -114,9 +151,63 @@
 
     {% endfor %}
 </div>
+<div id="bookEmptyResult" class="surface-panel text-center py-5 mt-4 d-none" aria-live="polite">
+    <i class="bi bi-search-heart display-6 text-muted"></i>
+    <p class="mt-3 mb-1 fw-semibold">Khong tim thay ket qua phu hop</p>
+    <p class="text-muted mb-0">Thu doi tu khoa tim kiem hoac bo loc sap xep.</p>
+</div>
 {% else %}
 <div class="alert alert-warning mt-4">
     <i class="bi bi-exclamation-triangle me-2"></i>Khong co sach hoac book-service dang khong kha dung.
 </div>
 {% endif %}
+
+<script>
+    (function () {
+        const searchInput = document.getElementById("bookSearch");
+        const sortSelect = document.getElementById("bookSort");
+        const grid = document.getElementById("bookGrid");
+        const emptyResult = document.getElementById("bookEmptyResult");
+        if (!grid) return;
+
+        const cards = Array.from(grid.querySelectorAll("[data-book-card]"));
+        cards.forEach((card, idx) => {
+            const surface = card.querySelector(".stagger-item");
+            if (surface) {
+                surface.style.setProperty("--stagger-delay", `${Math.min(idx * 55, 420)}ms`);
+            }
+        });
+
+        function applyFilterAndSort() {
+            const keyword = (searchInput?.value || "").trim().toLowerCase();
+            const mode = sortSelect?.value || "default";
+
+            cards.forEach((card) => {
+                const text = `${card.dataset.title} ${card.dataset.author}`;
+                const visible = !keyword || text.includes(keyword);
+                card.style.display = visible ? "" : "none";
+            });
+
+            const visibleCards = cards.filter((c) => c.style.display !== "none");
+            visibleCards.sort((a, b) => {
+                const priceA = Number(a.dataset.price || 0);
+                const priceB = Number(b.dataset.price || 0);
+                const stockA = Number(a.dataset.stock || 0);
+                const stockB = Number(b.dataset.stock || 0);
+                if (mode === "price-asc") return priceA - priceB;
+                if (mode === "price-desc") return priceB - priceA;
+                if (mode === "stock-desc") return stockB - stockA;
+                return 0;
+            });
+
+            visibleCards.forEach((card) => grid.appendChild(card));
+            if (emptyResult) {
+                emptyResult.classList.toggle("d-none", visibleCards.length > 0);
+            }
+        }
+
+        searchInput?.addEventListener("input", applyFilterAndSort);
+        sortSelect?.addEventListener("change", applyFilterAndSort);
+    })();
+</script>
 {% endblock %}

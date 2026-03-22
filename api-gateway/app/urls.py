@@ -16,6 +16,7 @@ urlpatterns = [
     path("logout/",                       views.logout_view,        name="logout"),
     path("register/",                     views.register_view,      name="register"),
     # Staff: book management
+    path("staff/books/",                 views.staff_books,        name="staff_books"),
     path("staff/books/add/",             views.staff_add_book,     name="staff_add_book"),
     path("staff/books/<int:book_id>/edit/",   views.staff_edit_book,   name="staff_edit_book"),
     path("staff/books/<int:book_id>/delete/", views.staff_delete_book, name="staff_delete_book"),

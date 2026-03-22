@@ -5,11 +5,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Bookstore{% endblock %}</title>
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;600;700&display=swap"
+        rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <style>
+        :root {
+            --bg: #f4f6f1;
+            --surface: #ffffff;
+            --surface-soft: #f8faf5;
+            --text: #16211a;
+            --muted: #5c6d62;
+            --brand: #0c7a52;
+            --brand-strong: #055a3b;
+            --accent: #f59a3f;
+            --focus: #ffbf47;
+            --ring: rgba(12, 122, 82, .18);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-lg: 0 18px 40px rgba(16, 33, 23, .12);
+            --shadow-md: 0 10px 22px rgba(16, 33, 23, .08);
+        }
+
         body {
-            background-color: #f8f9fa;
+            font-family: "Manrope", "Segoe UI", "Tahoma", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(85rem 28rem at 92% -8%, rgba(245, 154, 63, .18), transparent 60%),
+                radial-gradient(70rem 26rem at 8% -12%, rgba(12, 122, 82, .18), transparent 62%),
+                var(--bg);
+            min-height: 100vh;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .brand-heading {
+            font-family: "Fraunces", "Georgia", serif;
+            letter-spacing: .2px;
+        }
+
+        .site-shell {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .site-nav {
+            background: rgba(11, 28, 20, .86);
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            backdrop-filter: blur(10px);
         }
 
         .navbar-brand {
@@ -18,31 +74,250 @@
             letter-spacing: .5px;
         }
 
+        .navbar .nav-link {
+            border-radius: 999px;
+            padding: .45rem .8rem;
+            transition: all .22s ease;
+        }
+
+        .navbar .nav-link:hover {
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+        }
+
+        .navbar .nav-link.active,
+        .navbar .nav-link[aria-current="page"] {
+            background: rgba(255, 255, 255, .16);
+            color: #fff;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: 12px;
+            top: -44px;
+            background: #0b2116;
+            color: #ffffff;
+            border: 2px solid var(--focus);
+            border-radius: 10px;
+            padding: .45rem .75rem;
+            z-index: 1200;
+            text-decoration: none;
+            font-weight: 700;
+            transition: top .16s ease;
+        }
+
+        .skip-link:focus {
+            top: 8px;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible,
+        .btn-close:focus-visible {
+            outline: 3px solid var(--focus);
+            outline-offset: 2px;
+            box-shadow: none !important;
+        }
+
         .card {
-            transition: transform .2s, box-shadow .2s;
+            border: 1px solid rgba(16, 33, 23, .08);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            background: var(--surface);
+            transition: transform .22s ease, box-shadow .22s ease;
         }
 
         .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+            box-shadow: var(--shadow-lg);
         }
 
-        .badge-stock {
-            font-size: .75rem;
+        .btn {
+            border-radius: 10px;
+            font-weight: 700;
+            letter-spacing: .2px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+            border-color: var(--brand-strong);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background: linear-gradient(135deg, #0a6947, #044b31);
+            border-color: #044b31;
+        }
+
+        .btn-warning {
+            color: #2f2418;
+            border: 1px solid rgba(0, 0, 0, .06);
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            border-color: rgba(17, 34, 24, .16);
+            padding: .58rem .72rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 .25rem var(--ring);
+        }
+
+        .surface-panel {
+            background: var(--surface);
+            border: 1px solid rgba(16, 33, 23, .08);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 480px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section-subtle {
+            color: var(--muted);
+        }
+
+        .text-warning {
+            color: #ffd976 !important;
         }
 
         footer {
             margin-top: 60px;
-            padding: 20px 0;
-            border-top: 1px solid #dee2e6;
+            padding: 28px 0;
+            border-top: 1px solid rgba(16, 33, 23, .1);
+            color: #5d6a61;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp .45s ease both;
+        }
+
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(8px);
+            animation: staggerIn .45s ease forwards;
+            animation-delay: var(--stagger-delay, 0ms);
+        }
+
+        .toast-wrap {
+            z-index: 1080;
+        }
+
+        .toast {
+            border: 1px solid rgba(16, 33, 23, .1);
+            border-radius: 14px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .toast .toast-header {
+            border-bottom: 1px solid rgba(16, 33, 23, .06);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 26, 18, .36);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1090;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .2s ease;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .loading-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(16, 33, 23, .1);
+            padding: 18px 20px;
+            min-width: 260px;
+            text-align: center;
+        }
+
+        .is-submitting {
+            opacity: .72;
+            pointer-events: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes staggerIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .site-shell {
+                padding: 0 12px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .card:hover {
+                transform: none;
+            }
         }
     </style>
 </head>
 
 <body>
+    <a class="skip-link" href="#main-content">Bo qua dieu huong</a>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark site-nav shadow-sm" aria-label="Dieu huong chinh">
+        <div class="site-shell">
             <a class="navbar-brand" href="/books/"><i class="bi bi-book-half me-2"></i>Bookstore</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -50,11 +325,14 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto gap-1">
                     <li class="nav-item">
-                        <a class="nav-link" href="/books/"><i class="bi bi-house me-1"></i>Trang chu</a>
+                        <a class="nav-link {% if request.path == '/books/' or request.path == '/' %}active{% endif %}"
+                            href="/books/" {% if request.path == '/books/' or request.path == '/' %}aria-current="page"{% endif %}><i
+                                class="bi bi-house me-1"></i>Trang chu</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/cart/"><i class="bi bi-cart3 me-1"></i>Gio hang</a>
+                        <a class="nav-link {% if '/cart/' in request.path %}active{% endif %}" href="/cart/" {% if '/cart/' in request.path %}aria-current="page"{% endif %}><i
+                                class="bi bi-cart3 me-1"></i>Gio hang</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-warning" href="/admin/"><i class="bi bi-gear me-1"></i>Admin</a>
@@ -76,26 +354,88 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <main id="main-content" class="site-shell mt-4" tabindex="-1">
+        <div class="fade-in-up">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <div class="toast-container toast-wrap position-fixed top-0 end-0 p-3">
         {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="toast" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="3600">
+            <div class="toast-header">
+                {% if message.tags == 'success' %}
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong class="me-auto">Thanh cong</strong>
+                {% elif message.tags == 'error' %}
+                <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                <strong class="me-auto">Loi</strong>
+                {% elif message.tags == 'warning' %}
+                <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                <strong class="me-auto">Canh bao</strong>
+                {% else %}
+                <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                <strong class="me-auto">Thong bao</strong>
+                {% endif %}
+                <small class="text-muted">vua xong</small>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
         </div>
         {% endfor %}
         {% endif %}
-
-        {% block content %}{% endblock %}
     </div>
 
-    <footer class="text-center text-muted">
-        <div class="container">
-            <small>&copy; 2024 Bookstore Microservices &mdash; Built with Django &amp; Bootstrap 5</small>
+    <div id="submitLoadingOverlay" class="loading-overlay" aria-hidden="true">
+        <div class="loading-card" role="status" aria-live="polite">
+            <div class="spinner-border text-success" aria-hidden="true"></div>
+            <p class="mb-0 mt-3 fw-semibold">Dang xu ly, vui long doi...</p>
+        </div>
+    </div>
+
+    <footer class="text-center text-muted" role="contentinfo">
+        <div class="container d-grid gap-2">
+            <div class="d-flex justify-content-center flex-wrap gap-3 small">
+                <a href="/books/" class="text-decoration-none text-muted">Thu vien sach</a>
+                <a href="/cart/" class="text-decoration-none text-muted">Gio hang</a>
+                <a href="/staff/books/" class="text-decoration-none text-muted">Staff CRUD</a>
+                <a href="/health/" class="text-decoration-none text-muted">Health</a>
+            </div>
+            <small>&copy; 2026 Bookstore Microservices - Modernized UI Demo</small>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            document.querySelectorAll(".toast").forEach((el) => {
+                const toast = new bootstrap.Toast(el);
+                toast.show();
+            });
+
+            const overlay = document.getElementById("submitLoadingOverlay");
+            const submitForms = Array.from(document.querySelectorAll("form[data-loading]"));
+
+            submitForms.forEach((form) => {
+                form.addEventListener("submit", function () {
+                    if (form.dataset.noLoading === "true") return;
+                    form.classList.add("is-submitting");
+                    if (overlay) {
+                        overlay.classList.add("show");
+                        overlay.setAttribute("aria-hidden", "false");
+                    }
+
+                    const submitButton = form.querySelector("button[type='submit']");
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+                });
+            });
+        })();
+    </script>
 </body>
 
 </html>

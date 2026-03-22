@@ -2,92 +2,107 @@
 {% block title %}Gio hang — Bookstore{% endblock %}
 
 {% block content %}
-<h2 class="fw-bold mb-4"><i class="bi bi-cart3 me-2 text-primary"></i>Gio hang cua ban</h2>
+<section class="surface-panel p-4 p-lg-5 mb-4">
+    <div class="section-head mb-2">
+        <div>
+            <h2 class="fw-bold mb-2"><i class="bi bi-cart3 me-2 text-primary"></i>Gio hang cua ban</h2>
+            <p class="section-subtle mb-0">Kiem tra so luong, cap nhat nhanh va hoan tat don hang trong mot buoc.</p>
+        </div>
+        {% if items %}
+        <span class="badge text-bg-light border px-3 py-2">{{ items|length }} san pham</span>
+        {% endif %}
+    </div>
+</section>
 
 {% if error %}
 <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>{{ error }}</div>
 {% elif items %}
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0 align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th class="ps-3">#</th>
-                    <th>Ma sach</th>
-                    <th class="text-center">So luong</th>
-                    <th class="text-center">Cap nhat</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                <tr>
-                    <td class="ps-3">{{ forloop.counter }}</td>
-                    <td><span class="badge bg-primary fs-6">Book #{{ item.book_id }}</span></td>
-                    <td class="text-center fw-bold">{{ item.quantity }}</td>
-                    <td class="text-center">
-                        <form method="post" action="/cart/update/{{ item.id }}/" class="d-inline-flex gap-1">
-                            {% csrf_token %}
-                            <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="99"
-                                class="form-control form-control-sm" style="width:70px;" />
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">#</th>
+                                <th>San pham</th>
+                                <th class="text-center">So luong</th>
+                                <th class="text-center">Cap nhat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td class="ps-3">{{ forloop.counter }}</td>
+                                <td><span class="badge bg-primary-subtle text-primary-emphasis border">Book #{{ item.book_id }}</span></td>
+                                <td class="text-center fw-bold">{{ item.quantity }}</td>
+                                <td class="text-center">
+                                    <form method="post" action="/cart/update/{{ item.id }}/" class="d-inline-flex gap-1 align-items-center" data-loading>
+                                        {% csrf_token %}
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="99"
+                                            class="form-control form-control-sm" style="width:84px;" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-pencil-square me-1"></i>Luu
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-success text-white fw-semibold">
+                <i class="bi bi-credit-card me-2"></i>Thong tin thanh toan
+            </div>
+            <div class="card-body">
+                <form method="post" action="/cart/checkout/" class="d-grid gap-3" data-loading>
+                    {% csrf_token %}
+                    <div>
+                        <label class="form-label fw-semibold">Phuong thuc thanh toan</label>
+                        <select name="payment_method" class="form-select">
+                            <option value="COD">Thanh toan khi nhan hang (COD)</option>
+                            <option value="Bank Transfer">Chuyen khoan ngan hang</option>
+                            <option value="Credit Card">The tin dung / ghi no</option>
+                            <option value="MoMo">Vi MoMo</option>
+                            <option value="ZaloPay">ZaloPay</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label fw-semibold">Phuong thuc van chuyen</label>
+                        <select name="shipping_method" class="form-select">
+                            <option value="Standard">Giao hang tieu chuan (3-5 ngay)</option>
+                            <option value="Express">Giao hang nhanh (1-2 ngay)</option>
+                            <option value="Same Day">Giao trong ngay</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label fw-semibold">Dia chi giao hang</label>
+                        <input type="text" name="shipping_address" class="form-control"
+                            placeholder="So nha, duong, quan, thanh pho" required />
+                    </div>
 
-<!-- Checkout form with payment & shipping selection -->
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-success text-white fw-semibold">
-        <i class="bi bi-credit-card me-2"></i>Thong tin thanh toan
-    </div>
-    <div class="card-body">
-        <form method="post" action="/cart/checkout/">
-            {% csrf_token %}
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Phuong thuc thanh toan</label>
-                    <select name="payment_method" class="form-select">
-                        <option value="COD">Thanh toan khi nhan hang (COD)</option>
-                        <option value="Bank Transfer">Chuyen khoan ngan hang</option>
-                        <option value="Credit Card">The tin dung / ghi no</option>
-                        <option value="MoMo">Vi MoMo</option>
-                        <option value="ZaloPay">ZaloPay</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Phuong thuc van chuyen</label>
-                    <select name="shipping_method" class="form-select">
-                        <option value="Standard">Giao hang tieu chuan (3-5 ngay)</option>
-                        <option value="Express">Giao hang nhanh (1-2 ngay)</option>
-                        <option value="Same Day">Giao trong ngay</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Dia chi giao hang</label>
-                    <input type="text" name="shipping_address" class="form-control"
-                        placeholder="So nha, duong, quan, thanh pho" />
-                </div>
+                    <div class="d-grid gap-2 mt-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-bag-check me-1"></i>Xac nhan dat hang
+                        </button>
+                        <a href="/books/" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Tiep tuc mua
+                        </a>
+                    </div>
+                </form>
             </div>
-            <div class="d-flex justify-content-end mt-3 gap-2">
-                <a href="/books/" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>Tiep tuc mua
-                </a>
-                <button type="submit" class="btn btn-success btn-lg px-4">
-                    <i class="bi bi-bag-check me-1"></i>Xac nhan dat hang
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 {% else %}
-<div class="text-center py-5">
+<div class="surface-panel text-center py-5">
     <i class="bi bi-cart-x display-1 text-muted"></i>
     <p class="mt-3 text-muted fs-5">Gio hang cua ban dang trong.</p>
     <a href="/books/" class="btn btn-primary mt-2">

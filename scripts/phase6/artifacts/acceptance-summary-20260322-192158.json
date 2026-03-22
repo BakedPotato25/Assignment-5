@@ -1,0 +1,94 @@
+{
+    "generated_at":  "2026-03-22T19:21:32",
+    "criteria":  {
+                     "jwt_login_and_protected_api":  true,
+                     "saga_transition_and_compensation":  true,
+                     "rabbitmq_event_flow_observable":  true,
+                     "health_and_metrics_reachable":  true,
+                     "demo_reproducible_from_clean_build":  true
+                 },
+    "evidence":  {
+                     "jwt":  {
+                                 "username":  "phase6_0322192132",
+                                 "cart_status":  200,
+                                 "auth_login_status":  200,
+                                 "token_valid":  true
+                             },
+                     "saga":  {
+                                  "success_order_status":  201,
+                                  "success_order_final_status":  "Confirmed",
+                                  "success_order_saga_log_count":  4,
+                                  "ship_down_order_status":  502,
+                                  "ship_down_order_final_status":  "Compensated"
+                              },
+                     "events":  {
+                                    "event_published_count":  14,
+                                    "event_consumed_count":  5,
+                                    "sample_published":  "order-service  | EVENT_PUBLISHED type=order.created order_id=6",
+                                    "sample_consumed":  "pay-service    | EVENT_CONSUMED service=pay type=payment.reserve.requested order_id=6"
+                                },
+                     "health_metrics":  [
+                                            {
+                                                "name":  "gateway_health",
+                                                "uri":  "http://localhost:8000/health/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "gateway_metrics",
+                                                "uri":  "http://localhost:8000/metrics/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "auth_health",
+                                                "uri":  "http://localhost:8012/health/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "auth_metrics",
+                                                "uri":  "http://localhost:8012/metrics/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "order_health",
+                                                "uri":  "http://localhost:8007/health/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "order_metrics",
+                                                "uri":  "http://localhost:8007/metrics/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "pay_health",
+                                                "uri":  "http://localhost:8009/health/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "pay_metrics",
+                                                "uri":  "http://localhost:8009/metrics/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "ship_health",
+                                                "uri":  "http://localhost:8008/health/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            },
+                                            {
+                                                "name":  "ship_metrics",
+                                                "uri":  "http://localhost:8008/metrics/",
+                                                "status_code":  200,
+                                                "ok":  true
+                                            }
+                                        ]
+                 },
+    "done":  true
+}
